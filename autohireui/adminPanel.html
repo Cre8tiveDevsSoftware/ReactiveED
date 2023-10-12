@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AutoHire Car Rental</title>
+    <style>
+        /* CSS styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        a:hover {
+            background-color: #0056b3;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .unregister-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        #customerDetails, #carTable {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to AutoHire Car Rental</h1>
+    </header>
+    
+    <main>
+        <form id="customerForm">
+            <label for="customerId">Enter Customer ID:</label>
+            <input type="text" id="customerId" name="customerId" required>
+            <button type="submit">Fetch Customer Details</button>
+        </form>
+
+        <div id="customerDetails"></div>
+        <table id="carTable"></table>
+
+        <script>
+            document.getElementById("customerForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                fetchCustomerDetails();
+            });
+
+            function fetchCustomerDetails() {
+                var customerId = document.getElementById("customerId").value;
+
+                
+                var apiUrl = "http://localhost:8080/api/customers/" + customerId;
+
+                fetch(apiUrl)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        displayCustomerDetails(data);
+                        displayCars(data.carList);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            }
+
+            function displayCustomerDetails(customer) {
+                var customerDetails = document.getElementById("customerDetails");
+                customerDetails.innerHTML = `
+                    <h2>Customer Details</h2>
+                    <p><strong>First Name:</strong> ${customer.firstName}</p>
+                    <p><strong>Last Name:</strong> ${customer.lastName}</p>
+                    <p><strong>Email:</strong> ${customer.email}</p>
+                `;
+            }
+
+            function displayCars(cars) {
+                var carTable = document.getElementById("carTable");
+                carTable.innerHTML = `
+                    <h2>Associated Cars</h2>
+                    <tr>
+                        <th>Manufacturer</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                `;
+
+                cars.forEach(function(car) {
+                    carTable.innerHTML += `
+                        <tr>
+                            <td>${car.manufacturer}</td>
+                            <td>${car.model}</td>
+                            <td>${car.year}</td>
+                            <td>${car.color}</td>
+                            <td>${car.price}</td>
+                            <td>
+                                <button class="unregister-button" onclick="unregisterCar(${car.id})">Unregister</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            function unregisterCar(carId) {
+                // Replace the API_URL with your actual API endpoint for unregistering the car
+                var unregisterUrl = "http://localhost:8080/api/cars/unregister/" + carId;
+
+                fetch(unregisterUrl, { method: "POST" })
+                    .then(function(response) {
+                        if (response.ok) {
+                            alert("Car unregistered successfully");
+                            fetchCustomerDetails(); 
+                        } else {
+                            alert("Failed to unregister car");
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            }
+        </script>
+    </main>
+</body>
+</html

@@ -1,0 +1,22 @@
+.car-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.car-item {
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.car-item h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.car-item p {
+  margin: 5px 0;
+}
+

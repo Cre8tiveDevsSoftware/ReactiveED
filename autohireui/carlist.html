@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AutoHire Car Rental - Car Listings</title>
+    <style>
+        /* CSS styles for the car listing page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .car {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        
+        .car h2 {
+            margin-top: 0;
+        }
+        
+        .car p {
+            margin-bottom: 10px;
+        }
+        
+        .book-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .book-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AutoHire Car Rental</h1>
+    </header>
+    
+    <main>
+        <h2>Available Cars</h2>
+        
+        <div id="carList"></div>
+        
+        <script>
+            // JavaScript code to fetch car data from the API and populate the list
+            fetch('http://localhost:8080/api/cars')
+                .then(response => response.json())
+                .then(cars => {
+                    const carListContainer = document.getElementById('carList');
+                    
+                    cars.forEach(car => {
+                        const carDiv = document.createElement('div');
+                        carDiv.classList.add('car');
+                        
+                        const carTitle = document.createElement('h2');
+                        carTitle.innerText = car.manufacturer + ' ' + car.model;
+                        
+                        const carInfo = document.createElement('p');
+                        carInfo.innerText = 'Year: ' + car.year + ', Color: ' + car.color + ', Price: ' + car.price ;
+                        
+                        const bookButton = document.createElement('a');
+                        bookButton.classList.add('book-button');
+                        bookButton.innerText = 'Book This Car';
+                        bookButton.href = 'bookcar.html?carId=' + car.id;
+                        
+                        carDiv.appendChild(carTitle);
+                        carDiv.appendChild(carInfo);
+                        carDiv.appendChild(bookButton);
+                        
+                        carListContainer.appendChild(carDiv);
+                    });
+                })
+                .catch(error => {
+                    console.log('Error fetching car data:', error);
+                });
+        </script>
+    </main>
+</body>
+</html>
